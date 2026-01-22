@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 
 public class Health : MonoBehaviour, IDamageable
@@ -7,15 +7,21 @@ public class Health : MonoBehaviour, IDamageable
     public bool isInvulnerable;
 
     private float currentHealth;
+    private bool isDead = false;
+
     public static event Action<GameObject> OnEnemyKilled;
+    public static event Action OnPlayerDead;
 
     private void Awake()
     {
         currentHealth = maxHealth;
+        isDead = false;
+        isInvulnerable = false;
     }
 
     public void TakeDamage(float amount)
     {
+        if (isDead) return;
         if (isInvulnerable) return;
 
         currentHealth -= amount;
@@ -26,10 +32,13 @@ public class Health : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        if (isDead) return;
+        isDead = true;
+
         if (CompareTag("Player"))
         {
-            Debug.Log("PLAYER DEAD");
-            UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+            OnPlayerDead?.Invoke();
+            GameManager.Instance.GameOver();
         }
         else
         {

@@ -24,9 +24,14 @@ public class DefaultEnemy : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!GameManager.Instance.IsGameRunning)
+            return;
+
+
         Vector2 dir = ((Vector2)BodyPlayer.position - rb.position).normalized;
         rb.linearVelocity = dir * data.moveSpeed;
     }
+
 
     private void OnCollisionStay2D(Collision2D collision)
     {

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 476f19c25cf9df84ea5de4dc12040bfc, type: 3}
-  m_Name: EnemyDefault
+  m_Name: EnemyFast
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  maxHealth: 2
-  moveSpeed: 20
-  contactDamage: 5
-  damageCooldown: 0.5
+  maxHealth: 1
+  moveSpeed: 60
+  contactDamage: 10
+  damageCooldown: 5

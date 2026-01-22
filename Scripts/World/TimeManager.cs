@@ -4,47 +4,49 @@ public class TimeManager : MonoBehaviour
 {
     public static TimeManager Instance;
 
-    [Header("Time Scale")]
     public float normalTime = 1f;
     public float slowTime = 0.15f;
-
-    [Header("Smooth")]
     public float smoothSpeed = 5f;
-
-    [Header("Delay")]
-    public float timeBeforeSlow = 1f; // время, через которое замедляется
+    public float timeBeforeSlow = 1f;
 
     private float targetTime;
     private float lastActionTime;
 
-    void Awake()
+    public float TimePercent => Mathf.InverseLerp(slowTime, normalTime, Time.timeScale);
+
+    private void Awake()
     {
         if (Instance != null)
-            Destroy(gameObject);
-        else
-            Instance = this;
-    }
-
-    void Start()
-    {
-        targetTime = slowTime;
-        lastActionTime = Time.unscaledTime;
-    }
-
-    void Update()
-    {
-        // Если прошло время без действия — замедляемся
-        if (Time.unscaledTime - lastActionTime > timeBeforeSlow)
         {
-            targetTime = slowTime;
+            Destroy(gameObject);
+            return;
         }
-
-        // Плавное изменение timeScale
-        Time.timeScale = Mathf.Lerp(Time.timeScale, targetTime, Time.unscaledDeltaTime * smoothSpeed);
-        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        Instance = this;
     }
 
-    // Вызывать, когда игрок делает действие
+    private void Start()
+    {
+        targetTime = normalTime;
+        lastActionTime = Time.unscaledTime;
+        Time.timeScale = normalTime;
+    }
+
+    private void Update()
+    {
+        if (Time.unscaledTime - lastActionTime > timeBeforeSlow)
+            targetTime = slowTime;
+
+        Time.timeScale = Mathf.Lerp(
+            Time.timeScale,
+            targetTime,
+            Time.unscaledDeltaTime * smoothSpeed
+        );
+
+        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+
+        UIManager.Instance?.UpdateTimePercent(TimePercent);
+    }
+
     public void RegisterAction()
     {
         lastActionTime = Time.unscaledTime;
